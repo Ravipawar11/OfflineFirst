@@ -1,5 +1,29 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+# Offline First Habits
+
+This React Native iOS app keeps habit data in SQLite first, then syncs it to
+Cloud Firestore when a signed-in device is online. Local changes are queued,
+deletions are represented by Firestore tombstones for other devices, and local
+pending changes are never overwritten by a remote pull.
+
+## Firebase setup
+
+1. In Firebase Console, create a project and register an iOS app with the exact
+   bundle identifier used by the Xcode target (`com.demo.offlinefirst`).
+2. Download `GoogleService-Info.plist` and replace
+   `ios/OfflineFirstApp/GoogleService-Info.plist` with the downloaded file.
+3. In Authentication, enable **Email/Password**.
+4. Create a Cloud Firestore database in production mode, selecting the region
+   closest to your users.
+5. Install the Firebase CLI, log in, select the Firebase project, then deploy
+   the checked-in access rules with `firebase deploy --only firestore:rules`.
+6. Enable App Check before production release.
+
+The Firestore data structure is `users/{uid}/habits/{habitId}` and
+`users/{uid}/habit_logs/{logId}`. The checked-in rules restrict every subtree
+to its authenticated owner.
+
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
